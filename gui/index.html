@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Information System</title>
+    <script type="text/javascript" src="eel.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script defer src="script.js"></script>
+</head>
+<body class="w-screen h-screen bg-slate-700 flex ">
+
+    <nav class="z-10 fixed w-screen h-20 p-2 flex content-center justify-around content-center bg-slate-900">
+        <div class="h-full flex self-center mr-20">
+            <h1 class="text-teal-200 font-thin text-2xl text-center hidden lg:flex self-center lg:mr-16">Simple Student Management System</h1>
+            <h1 class="text-teal-200 font-thin text-2xl text-center self-center lg:hidden self-centerlg: mr-16">SSIS</h1>
+            <div class="h-full flex content-center py-2 lg:ml-16">
+                <input id="search" type="text" class="w-72 p-2 border-teal-400 bg-transparent text-teal-400 border-2 text-center" placeholder="Search">
+                <input onclick=" Search()" type="submit" class="p-2 transition duration-300 ease-in-out  bg-teal-500 cursor-pointer hover:bg-teal-400 hover:text-slate-600">
+            </div>
+        </div>
+        <div class="h-full flex justify-center p-2 lg:ml-20">
+            <p onclick="AddStudentModal()" class="flex self-center p-2 border-2 border-teal-400 text-slate-400 cursor-pointer rounded-md hover:bg-teal-500 hover:text-slate-900 justify-center items-center"><span class="font-bold animate-bounce duration-900">+</span><span class="hidden lg:flex">Add </span> Student</p>
+        </div>
+    </nav>
+    <main class="overflow-auto w-full h-full p-10 fixed mt-20 self-center mx-auto text-teal-500">
+        <table class="min-w-full text-left text-sm font-light">
+            <thead class="border-b font-medium dark:border-neutral-500">
+                <tr class="border-b transition duration-300 ease-in-out  dark:border-teal-500">
+                    <th class="whitespace-nowrap px-6 py-4 font-medium">LRN</th>
+                        <th class="whitespace-nowrap px-6 py-4">Profile</th>
+                        <th class="whitespace-nowrap px-6 py-4">Fullname</th>
+                        <th class="whitespace-nowrap px-6 py-4">Course</th>
+                        <th class="whitespace-nowrap px-6 py-4">Year</th>
+                        <th class="whitespace-nowrap px-6 py-4">Edit</th>
+                      <th class="whitespace-nowrap px-6 py-4">Delete</th>
+                  </tr>
+            </thead>
+            <tbody id="rowContainer">       
+            </tbody>
+          </table>
+          <div id="staticModal" data-modal-backdrop="static" tabindex="-1" aria-hidden="true" class="fixed top-0 hidden justify-center items-center  z-90 w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+            <div class="relative w-full max-w-2xl max-h-full bg-teal-700 flex flex-col">
+                <button id="del-button"  data-modal-hide="staticModal" type="button" class="flex-end right-0 text-rose-500 absolute bg-white hover:bg-rose-100 focus:ring-4 focus:outline-none focus:ring-rose-300  border border-rose-200 text-sm font-medium px-5 py-2.5 hover:text-rose-900 focus:z-10 dark:bg-rose-700 dark:text-rose-300 dark:border-rose-500 dark:hover:text-white dark:hover:bg-rose-600 dark:focus:ring-rose-600">Delete Student</button>
+                <!-- Modal content -->
+                    <div class="w-full flex justify-center mt-4">
+                        <img class="w-20 h-20 rounded-full bg-teal-700" src="./public/Male.png" id="profile-pic"/>
+                    </div>
+                    <div class="w-full flex justify-center mt-4">
+                        <input type="text" class="p-2 bg-slate-900 text-teal-500 w-96" placeholder="LRN" id="edit-lrn-input" readonly>
+                    </div>
+                    <div class="w-full flex justify-center mt-4">
+                        <input type="text" class="p-2 bg-slate-900 text-teal-500 w-44 mr-4" id="edit-fname-input" placeholder="Firstname">
+                        <input type="text" class="p-2 bg-slate-900 text-teal-500 w-44 ml-4" id="edit-lname-input" placeholder="Lastname">
+                    </div>
+                    <div class="w-full flex justify-center mt-4" id="select-Container">
+                        <input type="text" class="p-2 bg-slate-900 text-teal-500 w-56 mr-4" id="edit-mname-input" placeholder="Middlename">
+                    </div>
+                    <div class="w-full flex justify-center mt-4">
+                        <select name="" class="bg-slate-900 p-2 w-44 text-center mr-4" id="edit-gender-input">
+                            <option value="Male" selected>Male</option>
+                            <option value="Female">Female</option>
+                        </select>
+                        <select name=""  class="bg-slate-900 p-2 w-44 text-center ml-4" id="edit-year-input">
+                            <option value="1st" selected>1st</option>
+                            <option value="2nd">2nd</option>
+                            <option value="3rd" selected>3rd</option>
+                            <option value="4th">4th</option>
+                        </select>
+                    </div>
+                    <div class="w-full flex justify-center mt-4">
+                        <input type="email" class="p-2 bg-slate-900 text-teal-500 w-96 " id="edit-age-input" placeholder="Email-edit">
+                    </div
+                    <!-- Modal footer -->
+                    <div class="flex justify-center p-6 space-x-2 border-t border-teal-200 rounded-b dark:border-teal-600">
+                        <button onclick="UpdateStudent()" data-modal-hide="staticModal" type="button" class="text-white bg-teal-700 hover:bg-teal-800 focus:ring-4 focus:outline-none focus:ring-teal-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-teal-600 dark:hover:bg-teal-700 dark:focus:ring-teal-800">Edit</button>
+                        <button onclick="CloseEdit('staticModal')"  data-modal-hide="staticModal" type="button" class="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600">Close</button>
+                        
+                    </div>
+                </div>
+            </div>
+            <div id="addStudentModal" data-modal-backdrop="static" tabindex="-1" aria-hidden="true" class="fixed top-0 hidden justify-center items-center  z-90 w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+                <div class="relative w-full max-w-2xl max-h-full bg-teal-700">
+                    <!-- Modal content -->
+                        <div class="w-full flex justify-center mt-4">
+                           <h2 class="text-slate-900 font-bold text-2xl my-4">Add New Student</h2>
+                        </div>
+                        <div class="w-full flex justify-center mt-4">
+                            <input type="number" class="p-2 bg-slate-900 text-teal-500 w-96 overflow-hidden" placeholder="LRN" id="add-lrn-input" >
+                        </div>
+                        <div class="w-full flex justify-center mt-4">
+                            <input type="text" class="p-2 bg-slate-900 text-teal-500 w-44 mr-4" id="add-fname-input" placeholder="Firstname">
+                            <input type="text" class="p-2 bg-slate-900 text-teal-500 w-44 ml-4" id="add-lname-input" placeholder="Lastname">
+                        </div>
+                        <div class="w-full flex justify-center mt-4" id="select-Container2">
+                            <input type="text" class="p-2 bg-slate-900 text-teal-500 w-56 mr-4" id="add-mname-input" placeholder="Middlename">
+                        </div>
+                        <div class="w-full flex justify-center mt-4">
+                            <select name="" class="bg-slate-900 p-2 w-44 text-center mr-4" id="add-gender-input">
+                                <option value="Male" selected>Male</option>
+                                <option value="Female">Female</option>
+                            </select>
+                            <select name=""  class="bg-slate-900 p-2 w-44 text-center ml-4" id="add-year-input">
+                                <option value="1st" selected>1st</option>
+                                <option value="2nd">2nd</option>
+                                <option value="3rd" selected>3rd</option>
+                                <option value="4th">4th</option>
+                            </select>
+                        </div>
+                        <div class="w-full flex justify-center mt-4" id="select-Container2">
+                            <input type="email" class="p-2 bg-slate-900 text-teal-500 w-96 " id="add-age-input" placeholder="Email">
+                        </div
+                        <!-- Modal footer -->
+                        <div class="flex justify-center p-6 space-x-2 border-t border-teal-200 rounded-b dark:border-teal-600">
+                            <button onclick="AddStudent()" data-modal-hide="staticModal" type="button" class="text-white bg-teal-700 hover:bg-teal-800 focus:ring-4 focus:outline-none focus:ring-teal-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-teal-600 dark:hover:bg-teal-700 dark:focus:ring-teal-800">Add</button>
+                            <button onclick="CloseAdd('addStudentModal')" data-modal-hide="staticModal" type="button" class="text-rose-500 bg-white hover:bg-rose-100 focus:ring-4 focus:outline-none focus:ring-rose-300 rounded-lg border border-rose-200 text-sm font-medium px-5 py-2.5 hover:text-rose-900 focus:z-10 dark:bg-rose-700 dark:text-rose-300 dark:border-rose-500 dark:hover:text-white dark:hover:bg-rose-600 dark:focus:ring-gray-600">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="searchModal" data-modal-backdrop="static" tabindex="-1" aria-hidden="true" class="fixed hidden top-0 flex justify-center items-center  z-90 w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+                <div class="relative w-full max-w-2xl max-h-full bg-teal-700  flex flex-col justify-center items-center p-2" >
+                    <!-- Modal content -->
+                        <div class="w-full h-96 p-2 flex justify-center  overflow-y-auto flex-col items-center overflow-y-auto" id="search-content">
+                            
+                        
+                        </div>
+                        <!-- Modal footer -->
+                        <div class="flex justify-center p-6 space-x-2 border-t border-teal-200 rounded-b dark:border-teal-600">
+                            <button onclick="CloseAdd('searchModal')" data-modal-hide="staticModal" type="button" class="text-rose-500 bg-white hover:bg-rose-100 focus:ring-4 focus:outline-none focus:ring-rose-300 rounded-lg border border-rose-200 text-sm font-medium px-5 py-2.5 hover:text-rose-900 focus:z-10 dark:bg-rose-700 dark:text-rose-300 dark:border-rose-500 dark:hover:text-white dark:hover:bg-rose-600 dark:focus:ring-gray-600">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+    </main>
+    
+
+    
+</body>
+</html>
