@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script type = "text/javascript" src = "/eel.js"></script>  
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="sweetalert2.all.min.js"></script>
+    <script defer src="./scripts.js"></script>
+    <title>Student Information System</title>
+</head>
+<body>
+    <main class="w-screen h-screen">
+        <nav class="h-20 w-full justify-center lg:justify-start shadow-2xl shadow-rose-200 flex items-center px-16">
+            <p class="text-rose-500 font-semibold text-lg hidden lg:flex mx-4 lg:mx-16">Simple Student Information System</p>
+            <!----Form for Searching -->
+            <form action="" id="searchform">
+                <input id="searchinput" required type="text" class="cursor-search outline-rose-600 w-96 px-4 py-4 bg-rose-100 text-rose-500 font-semibold" placeholder="Search Courses" >
+            </form>
+            <!----End Form for Searching -->
+            <a href="student.html" class="mx-10 p-2 hover:p-3 bg-rose-200 rounded-full hover:bg-rose-300 duration-500 cursor-pointer">
+                <img src="./public/students.png" alt="" class="w-10 h-10">
+            </a>
+            <div onclick="Show('addModal')" class="mx-10 p-2 hover:p-3 bg-rose-200 rounded-full hover:bg-rose-300 duration-500 cursor-pointer">
+                <img src="./public/courses.png" alt="" class="w-10 h-10">
+            </div>
+        </nav>
+        <!---Student Display-->
+            <section id='courses-container'  class="w-full h-fit px-20 md:px-52 lg:px-72 py-20 overflow-y-auto grid lg:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5" style="max-height: 500px;">
+                <!--Contents-->
+            </section>
+        <!--End Student Display-->
+        <!------Searching Result Modal-->
+        <div id="searchModal" class="hidden h-fit pb-10 shadow-rose-200 shadow-2xl pt-10 w-5/6 overflow-y-auto overflow-x-hidden md:w-4/6 lg:w-2/6 bg-rose-200 fixed fixed top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2" style="max-height: 500px;">
+            <div class="p-2 absolute z-90 bg-red-200 right-0 top-0  cursor-pointer">
+                <img onclick="Hide('searchModal')" src="./public/close.png" class="w-10 h-10">
+            </div>
+            <div id="resultscontainer" class="w-full h-full">
+
+            </div>
+
+        </div>
+         <!------End Searching Result Modal-->
+         <!------Edit Modal-->
+        <form action="" id="editForm">
+            <div id="editModal" class="hidden overflow-y-hidden h-fit px-5 pb-10 shadow-rose-200 shadow-2xl pt-10 w-5/6 overflow-y-auto overflow-x-hidden md:w-4/6 lg:w-2/6 bg-rose-200 fixed fixed top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2" style="max-height: 500px;">
+                <div class="p-2 absolute z-90 bg-red-200 right-0 top-0  cursor-pointer">
+                    <img onclick="Hide('editModal')" src="./public/close.png" class="w-10 h-10">
+                </div>
+                <div class="gap-2 flex my-3 text-rose-500 justify-center">
+                    <input readonly id="edit-code" type="text" class="w-1/2 py-2 px-4 outline-rose-600 text-rose-500 font-semibold" placeholder="Code">
+                </div>
+                <div class="gap-2 flex my-3 text-rose-500 justify-center">
+                    <input id="edit-course" type="text" class="w-5/6 py-2 px-4 outline-rose-600 text-rose-500 font-semibold" placeholder="Course">
+                    <input type="hidden" id="edit-id">
+                </div>
+                <div class="gap-2 flex my-3  font-semibold justify-around cursor-pointer text-white">
+                    <input type="submit" value="Update" class="w-5/6 py-4 cursor-pointer bg-emerald-500 hover:bg-emerald-600" >
+                    <div onclick="deleteCourse()"  class="w-5/6 py-4 cursor-pointer bg-red-500 hover:bg-red-600 flex items-center justify-center" >Delete</div>
+                </div>
+            </div>
+        </form>
+         <!------End Edit Modal-->
+         <!------Add Modal-->
+         <form action="" id="addForm">
+            <div id="addModal" class="hidden overflow-y-hidden h-fit px-5 pb-10 shadow-rose-200 shadow-2xl pt-10 w-5/6 overflow-y-auto overflow-x-hidden md:w-4/6 lg:w-2/6 bg-rose-200 fixed fixed top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2" style="max-height: 500px;">
+                <div class="p-2 absolute z-90 bg-red-200 right-0 top-0  cursor-pointer">
+                    <img onclick="Hide('addModal')" src="./public/close.png" class="w-10 h-10">
+                </div>
+                <div class="gap-2 flex my-3 text-rose-500 justify-center">
+                    <input id="add-code" type="text" class="w-1/2 py-2 px-4 outline-rose-600 text-rose-500 font-semibold" placeholder="Code">
+                </div>
+                <div class="gap-2 flex my-3 text-rose-500 justify-center">
+                    <input id="add-course" type="text" class="w-5/6 py-2 px-4 outline-rose-600 text-rose-500 font-semibold" placeholder="Course">
+                </div>
+                <div class="gap-2 flex my-3 bg-emerald-500 font-semibold justify-around hover:bg-emerald-600 cursor-pointer text-white">
+                    <input type="submit" value="Update" class="w-5/6 py-4 cursor-pointer" >
+                </div>
+            </div>
+        </form>
+         <!------End Add Modal-->
+    </main> 
+</body>
+</html>
