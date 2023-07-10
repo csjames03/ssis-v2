@@ -1,20 +1,19 @@
-# importing the eel library
-import eel
+import eel  
 import sqlite3 as sql
 
-# initializing the application
-eel.init("gui")
 
-databasename = 'StudentsInfo.db'
+eel.init("userinterface")
+
+databasename = 'ssis.db'
 
 
-
+#This will read the file in the Student CSV
 @eel.expose
-def getAllStudents():
+def getAllStudent():
     con = sql.connect(databasename)
     cur = con.cursor()
     students = []
-    for row in cur.execute("SELECT * FROM student"):
+    for row in cur.execute("SELECT * FROM Students"):
         students.append(row)
 
     con.commit()
@@ -22,39 +21,42 @@ def getAllStudents():
 
     return students
 
+#This will Append Students into the Student CSV
+@eel.expose
+def AddStudent(studentInfo):
+    try:
+        con = sql.connect(databasename)
+        cur = con.cursor()
+        query = '''INSERT INTO Students (fname, mname, lname, gender, dob, gmail, year_level, course_code)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?);
+                '''
+        cur.execute(
+            query,
+            (
+                studentInfo[0],
+                studentInfo[1],
+                studentInfo[2],
+                studentInfo[3],
+                studentInfo[4],
+                studentInfo[5],
+                studentInfo[6],
+                studentInfo[7],
+            ),
+        )
+        con.commit()
+        con.close()
+        return True
+    except Exception as e:
+        return False
+
 
 @eel.expose
-def add(studentinfo):
-    con = sql.connect(databasename)
-    cur = con.cursor()
-    query = "INSERT INTO student (lrn, fname, mname, lname, gender, gmail, year, course, coursecode) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) ;"
-    cur.execute(
-        query,
-        (
-            studentinfo[0],
-            studentinfo[1],
-            studentinfo[2],
-            studentinfo[3],
-            studentinfo[4],
-            studentinfo[5],
-            studentinfo[7],
-            studentinfo[6],
-            studentinfo[8],
-        ),
-    )
-    con.commit()
-    for row in cur.execute("SELECT * FROM student"):
-        print(row)
-
-    con.close()
-
-
-@eel.expose
-def searchStudentbyLrn(id):
+#Search for Student Using LRN
+def SearchById(id):
     con = sql.connect(databasename)
     cur = con.cursor()
     students = []
-    query = "SELECT * FROM student WHERE lrn LIKE ?;"
+    query = "SELECT * FROM Students WHERE student_id LIKE ?;"
     pattern = f"{id}%"
     for row in cur.execute(query, (pattern,)):
         students.append(row)
@@ -66,11 +68,12 @@ def searchStudentbyLrn(id):
 
 
 @eel.expose
-def searchStudentbyName(name):
+#Search for Student Using Name
+def SearchByName(name):
     con = sql.connect(databasename)
     cur = con.cursor()
     students = []
-    query = "SELECT * FROM Student WHERE fname LIKE ?;"
+    query = "SELECT * FROM Students WHERE fname LIKE ?;"
     pattern = f"{name}%"
     for row in cur.execute(query, (pattern,)):
         students.append(row)
@@ -81,54 +84,170 @@ def searchStudentbyName(name):
     return students
 
 
+
 @eel.expose
-def updateStudent(studentid, studentinfo):
-    print(studentinfo)
+def UpdateStudent(id, new_data):
     con = sql.connect(databasename)
     cur = con.cursor()
-    query = "UPDATE Student SET fname = ?, mname = ?, lname = ?, gender = ?, gmail=?,course = ?, year = ?, coursecode = ? WHERE lrn = ?;"
-    cur.execute(
-        query,
-        (
-            studentinfo[0],
-            studentinfo[1],
-            studentinfo[2],
-            studentinfo[3],
-            studentinfo[4],
-            studentinfo[5],
-            studentinfo[6],
-            studentinfo[7],
-            studentid,
-        ),
-    )
+    query = "UPDATE Students SET fname = ?, mname = ?, lname = ?, gender = ?, dob = ?, gmail = ?, year_level = ?, course_code = ? WHERE student_id = ?;"
+    try:
+        cur.execute(
+            query,
+            (
+                new_data[0],
+                new_data[1],
+                new_data[2],
+                new_data[3],
+                new_data[4],
+                new_data[5],
+                new_data[6],
+                new_data[7],
+                id,
+            ),
+        )
+        con.commit()
+        con.close()
+        return True
+    except Exception as e:
+        con.rollback()
+        con.close()
+        return False
+
+
+
+@eel.expose
+def DeleteStudent(studentid):
+    con = sql.connect(databasename)
+    cur = con.cursor()
+    query = "DELETE FROM Students WHERE student_id = ?;"
+    try:
+        cur.execute(query, (studentid,))
+        con.commit()
+        con.close()
+        return True
+    except Exception as e:
+        print(f"Error occurred while deleting student record: {str(e)}")
+        con.rollback()
+        con.close()
+        return False
+
+@eel.expose
+#Search for Student Using Name
+def CourseSearchStudent(code):
+    con = sql.connect(databasename)
+    cur = con.cursor()
+    students = []
+    query = "SELECT * FROM Students WHERE course_code = ?;"
+    for row in cur.execute(query, (code,)):
+        students.append(row)
+
     con.commit()
     con.close()
 
+    return students
 
+#This will get All the Courses
 @eel.expose
-def getStudentInfo(studentid):
+def getAllSCourses():
     con = sql.connect(databasename)
     cur = con.cursor()
-    query = "SELECT * FROM student WHERE lrn = ?;"
-    cur.execute(
-        query,
-        (studentid,),
-    )
-    student_info = cur.fetchone()
-    return student_info
+    courses = []
+    for row in cur.execute("SELECT * FROM Courses"):
+        courses.append(row)
 
-
-@eel.expose
-def deleteStudent(studentid):
-    con = sql.connect(databasename)
-    cur = con.cursor()
-    query = "DELETE from student where lrn =?"
-    cur.execute(
-        query,
-        (studentid,),
-    )
     con.commit()
     con.close()
 
+    return courses
 
-eel.start("index.html")
+
+@eel.expose
+#Search for Student Using LRN
+def GetSpecificCourse(course_code):
+    con = sql.connect(databasename)
+    cur = con.cursor()
+    query = "SELECT * FROM Courses WHERE course_code = ?;"
+    cur.execute(query, (course_code,))
+    course = cur.fetchone()
+    con.close()
+    return course
+
+
+@eel.expose
+#Search for Courses Using id
+def UpdateCourse(code, course):
+    try:
+        con = sql.connect(databasename) # Replace "databasename.db" with your actual SQLite database file
+        cur = con.cursor()
+        query = "UPDATE Courses SET course = ? WHERE course_code = ?;"
+        cur.execute(query, (course, code))
+        con.commit()
+        con.close()
+        return True
+    except sql.Error as error:
+        print("Error updating course in the database:", error)
+        return False
+
+#This will delete the Course using id
+@eel.expose
+def DeleteCourse(id):
+    try:
+        con = sql.connect(databasename)  # Replace "databasename.db" with your actual SQLite database file
+        cur = con.cursor()
+        query = "DELETE FROM Courses WHERE course_code = ?;"
+        cur.execute(query, (id,))
+        con.commit()
+        con.close()
+        return True
+    except sql.Error as error:
+        print("Error deleting course from the database:", error)
+        return False
+
+
+
+@eel.expose
+#Search for Student Using LRN
+def SearchByCode(code):
+    try:
+        connection = sql.connect(databasename)
+        cursor = connection.cursor()
+        query = "SELECT * FROM Courses WHERE course_code LIKE ?;"
+        code_pattern = '%' + code + '%' 
+        cursor.execute(query, (code_pattern,))
+        courses = cursor.fetchall()
+        connection.close()
+        return courses
+    except sql.Error as error:
+        print("Error searching for courses by code:", error)
+
+
+@eel.expose
+def IsUniqueId(id):
+    try:
+        con = sql.connect(databasename)  # Replace "databasename.db" with your actual SQLite database file
+        cur = con.cursor()
+        query = "SELECT COUNT(*) FROM Courses WHERE course_code = ?;"
+        cur.execute(query, (id,))
+        count = cur.fetchone()[0]
+        con.close()
+        return count == 0
+    except sql.Error as error:
+        return False
+
+
+#This will Append Course into the Courses CSV
+@eel.expose
+def AddCourses(coursesInfo):
+    try:
+        con = sql.connect(databasename)  # Replace "databasename.db" with your actual SQLite database file
+        cur = con.cursor()
+        query = "INSERT INTO Courses (course_code, course) VALUES (?, ?);"
+        cur.execute(query, (coursesInfo))
+        con.commit()
+        con.close()
+        return True
+    except sql.Error as error:
+        return False
+
+eel.start("student.html")
+
