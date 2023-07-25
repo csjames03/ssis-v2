@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script type = "text/javascript" src = "/eel.js"></script>  
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="sweetalert2.all.min.js"></script>
+    <script defer src="./script.js"></script>
+    <title>Student Information System</title>
+</head>
+<body>
+    <main class="w-screen h-screen">
+        <nav class="h-20 w-full justify-center lg:justify-start shadow-2xl shadow-rose-200 flex items-center px-16">
+            <p class="text-rose-500 font-semibold text-lg hidden lg:flex mx-4 lg:mx-16">Simple Student Information System</p>
+            <!----Form for Searching -->
+            <form action="" id="searchform">
+                <input id="searchinput" required type="text" class="cursor-search outline-rose-600 w-96 px-4 py-4 bg-rose-100 text-rose-500 font-semibold" placeholder="Search Student" >
+            </form>
+            <!----End Form for Searching -->
+            <div onclick="Show('addModal')" class="mx-10 p-2 hover:p-3 bg-rose-200 rounded-full hover:bg-rose-300 duration-500 cursor-pointer">
+                <img src="./public/students.png" alt="" class="w-10 h-10">
+            </div>
+            <a href="courses.html" class="mx-10 p-2 hover:p-3 bg-rose-200 rounded-full hover:bg-rose-300 duration-500 cursor-pointer">
+                <img src="./public/courses.png" alt="" class="w-10 h-10">
+            </a>
+        </nav>
+        <!------Searching Result Modal-->
+        <div id="searchModal" class="hidden h-fit pb-10 shadow-rose-200 shadow-2xl pt-2 w-5/6 overflow-y-auto overflow-x-hidden md:w-4/6 lg:w-2/6 bg-rose-200 fixed fixed top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2" style="max-height: 500px;">
+            <div class="p-2 mt-1 sticky z-90 bg-red-200  top-0 w-full  flex w-10 h-10 cursor-pointer">
+                <img onclick="Hide('searchModal')" src="./public/close.png" class="w-10 h-10 absolute right-0 flex-end">
+            </div>
+            <div id="resultscontainer" class="w-full h-full">
+
+            </div>
+
+        </div>
+         <!------End Searching Result Modal-->
+         <!------Edit Modal-->
+        <form action="" id="editForm">
+            <div id="editModal" class="hidden overflow-y-hidden h-fit px-5 pb-10 shadow-rose-200 shadow-2xl pt-10 w-5/6 overflow-y-auto overflow-x-hidden md:w-4/6 lg:w-2/6 bg-rose-200 fixed fixed top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2" style="max-height: 500px;">
+                <div class="p-2 absolute z-90 bg-red-200 right-0 top-0  cursor-pointer">
+                    <img onclick="Hide('editModal')" src="./public/close.png" class="w-10 h-10">
+                </div>
+            <div class="w-full p-2 flex flex-col justify-center items-center h-fit">
+                <img alt="" class="w-24" id="edit-profile">
+                <p class="font-semibold text-lg text-rose-500" id="lrn-edit"></p>
+            </div>
+            <div class="gap-2 flex my-3 text-rose-500">
+                <input id="edit-fname" type="text" class="w-1/2 py-2 px-4 outline-rose-600 text-rose-500 font-semibold" placeholder="Firstname">
+                <input id="edit-mname" type="text" class="w-1/2 py-2 px-4 outline-rose-600 text-rose-500 font-semibold" placeholder="Middlename">
+            </div>
+            <div class="gap-2 flex my-3 text-rose-500">
+                <input id="edit-lname" type="text" class="w-4/6 py-2 px-4 outline-rose-600 text-rose-500 font-semibold" placeholder="Lastname">
+                <input id="edit-date" type="date" class="w-2/6 py-2 px-4 outline-rose-600 text-rose-500 font-semibold" >
+            </div>
+            <div class="gap-2 flex my-3 text-rose-500">
+                <input id="edit-email" type="email" class="w-full py-2 px-4 outline-rose-600 text-rose-500 font-semibold" placeholder="Email">
+            </div>
+            <div class="gap-2 flex my-3 text-rose-500 justify-around">
+                <div class="w-1/2 flex items-center font-semibold px-6 flex-start">
+                    <label for="edit-gender">Sex:</label>
+                    <select  id="edit-gender" class=" py-2 px-4 outline-rose-600 text-rose-500 font-semibold w-full text-center flex justify-center">
+                        <option value="Male" selected class="py-5">Male</option>
+                        <option value="Female" class="py-5">Female</option>
+                     </select>  
+                </div> 
+                <div class="w-1/2 flex items-center font-semibold px-6 flex-end">
+                    <label for="edit-year">Year:</label>
+                    <select  id="edit-year" class=" py-2 px-4 outline-rose-600 text-rose-500 font-semibold w-full text-center flex justify-center">
+                        <option value="1st" class="py-5">1st</option>
+                        <option value="2nd" class="py-5">2nd</option>
+                        <option value="3rd" class="py-5">3rd</option>
+                        <option value="4th" class="py-5">4th</option>
+                    </select>  
+                </div>
+            </div>
+            <div class="gap-2 flex my-3 text-rose-500 justify-around">
+                <div class="w-full flex items-center font-semibold px-6 flex-end">
+                    <select  id="edit-code" class=" py-2 px-5 outline-rose-600 text-rose-500 font-semibold w-full text-center flex justify-center">
+                    </select>  
+                </div>
+            </div>
+            <div class="gap-2 flex my-3 font-semibold justify-around  cursor-pointer text-white">
+                <input type="submit" value="Update" class="w-5/6 py-4 cursor-pointer bg-emerald-500 hover:bg-emerald-600" >
+                <div class="w-1/2 py-4 cursor-pointer bg-rose-500 hover:bg-rose-600 text-center" onclick="onClickDel()">Delete</div>
+            </div>
+            </div>
+        </form>
+         <!------End Edit Modal-->
+         <!------Add Modal-->
+         <form action="" id="addForm">
+            <div id="addModal" class="hidden overflow-y-hidden h-fit px-5 pb-10 shadow-rose-200 shadow-2xl pt-10 w-5/6 overflow-y-auto overflow-x-hidden md:w-4/6 lg:w-2/6 bg-rose-200 fixed fixed top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2" style="max-height: 500px;">
+                <div class="p-2 absolute z-90 bg-red-200 right-0 top-0  cursor-pointer">
+                    <img onclick="Hide('addModal')" src="./public/close.png" class="w-10 h-10">
+                </div>
+            <div class="w-full p-2 flex flex-col justify-center items-center h-fit">
+                <div class="w-fit p-2 flex flex-col justify-center items-center h-fit ">
+                    <div class="w-fit p-2 flex flex-col justify-center items-center h-fit bg-rose-300 rounded-full">
+                        <img src="./public/students.png" alt="" class="w-24">
+                        <p class="font-semibold text-lg text-rose-500" id="lrn-edit"></p>
+                    </div>
+                </div>
+            </div>
+            <div class="gap-2 flex my-2 text-rose-500">
+                <input id="add-fname" type="text" class="w-1/2 py-2 px-4 outline-rose-600 text-rose-500 font-semibold" placeholder="Firstname">
+                <input id="add-mname" type="text" class="w-1/2 py-2 px-4 outline-rose-600 text-rose-500 font-semibold" placeholder="Middlename">
+            </div>
+            <div class="gap-2 flex my-2 text-rose-500">
+                <input id="add-lname" type="text" class="w-4/6 py-2 px-4 outline-rose-600 text-rose-500 font-semibold" placeholder="Lastname">
+                <select  id="add-gender" class=" py-2 px-4 outline-rose-600 text-rose-500 font-semibold w-full text-center flex justify-center">
+                        <option value="Male" class="py-5" selected>Male</option>
+                        <option value="Female" class="py-5">Female</option>
+                     </select> 
+            </div>
+            <div class="gap-2 flex my-2 text-rose-500 justify-around">
+                <div class="w-1/2 flex items-center font-semibold px-6 flex-start">
+                    <input id="add-date" type="date" class="w-full py-2 px-4 outline-rose-600 text-rose-500 font-semibold" >
+                </div> 
+                <div class="w-1/2 flex items-center font-semibold px-6 flex-end">
+                    <label for="add-year">Year:</label>
+                    <select  id="add-year" class=" py-2 px-4 outline-rose-600 text-rose-500 font-semibold w-full text-center flex justify-center">
+                        <option value="1st" class="py-5" selected>1st</option>
+                        <option value="2nd" class="py-5">2nd</option>
+                        <option value="3rd" class="py-5">3rd</option>
+                        <option value="4th" class="py-5">4th</option>
+                    </select>  
+                </div>
+            </div>
+            <div class="gap-2 flex my-2 text-rose-500">
+                <input id="add-email" type="email" class="w-full py-2 px-4 outline-rose-600 text-rose-500 font-semibold" placeholder="Email">
+            </div>
+            <div class="gap-2 flex my-3 text-rose-500 justify-around">
+                <div class="w-full flex items-center font-semibold px-6 flex-end">
+                    <select  id="add-code" class=" py-2 px-5 outline-rose-600 text-rose-500 font-semibold w-full text-center flex justify-center">
+                    </select>  
+                </div>
+            </div>
+            <div class="gap-2 flex my-3 bg-emerald-500 font-semibold justify-around hover:bg-emerald-600 cursor-pointer text-white">
+                <input type="submit" value="Add Student" class="w-1/2 py-4 cursor-pointer" >
+                
+            </div>
+            </div>
+        </form>
+         <!------End Add Modal-->
+          <!---Student Display-->
+          <section class=" p-2 w-full h-fit  min-h-min overflow-y-auto pt-10 flex flex-col justify-center items-center"  style="max-height: 700px;">
+            <div class="w-full lg:w-4/6 h-fit grid grid-cols-7 bg-white p-4 font-semibold text-rose-600 fixed top-20">
+                <div class="col-span-1">Profile</div>
+                <div class="col-span-2">Fullname</div>
+                <div class="col-span-1">Gender</div>
+                <div class="col-span-1">Age</div>
+                <div class="col-span-1">Year</div>
+                <div class="col-span-1">Course</div>
+            </div>
+            <div id="displayContainer" class="w-full h-full overflow-y-auto flex mt-10 p-2 items-center flex-col" >
+                <!--Contents-->
+            </div>
+            
+         </section>
+         <!---End Student Display-->
+    </main> 
+</body>
+</html>
